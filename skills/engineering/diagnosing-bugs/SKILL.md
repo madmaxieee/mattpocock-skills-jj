@@ -3,6 +3,12 @@ name: diagnosing-bugs
 description: Diagnosis loop for hard bugs and performance regressions. Use when the user says "diagnose"/"debug this", or reports something broken/throwing/failing/slow.
 ---
 
+## Version control
+
+Use `jj root` to detect jj-managed repositories, including colocated repos. Prefer jj there; use Git only in Git-only repositories. If detection fails but the current directory or an ancestor contains `.jj`, resolve the jj problem rather than falling back to Git. Check installed `--help` for version-specific syntax. Preserve unrelated user work by isolating task changes before editing.
+
+In jj use `jj status`, `jj diff`, `jj log`, `jj describe`, and `jj new`; there is no staging step. Use bookmarks for published names and `jj git fetch` / `jj git push` for remotes. Use `gh` for GitHub issues and PRs, passing explicit repo/head/base names when needed. Push through jj before opening a PR; avoid `gh` options that perform local Git operations.
+
 # Diagnosing Bugs
 
 A discipline for hard bugs. Skip phases only when explicitly justified.
@@ -30,7 +36,7 @@ Spend disproportionate effort here. **Be aggressive. Be creative. Refuse to give
 5. **Replay a captured trace.** Save a real network request / payload / event log to disk; replay it through the code path in isolation.
 6. **Throwaway harness.** Spin up a minimal subset of the system (one service, mocked deps) that exercises the bug code path with a single function call.
 7. **Property / fuzz loop.** If the bug is "sometimes wrong output", run 1000 random inputs and look for the failure mode.
-8. **Bisection harness.** If the bug appeared between two known states (commit, dataset, version), automate "boot at state X, check, repeat" so you can `git bisect run` it.
+8. **Bisection harness.** If the bug appeared between two known states (commit, dataset, version), automate "boot at state X, check, repeat" using an isolated jj workspace to test candidate revisions without moving the user's working copy. Record good/bad bounds, results, and untestable revisions. Check installed help for available automation instead of assuming a jj bisect command. In Git-only repos, use `git bisect run`.
 9. **Differential loop.** Run the same input through old-version vs new-version (or two configs) and diff outputs.
 10. **HITL bash script.** Last resort. If a human must click, drive _them_ with `scripts/hitl-loop.template.sh` so the loop is still structured. Captured output feeds back to you.
 

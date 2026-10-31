@@ -3,7 +3,13 @@ name: code-review
 description: "Review the changes since a fixed point (commit, branch, tag, or merge-base) along two axes: Standards (does the code follow this repo's documented coding standards?) and Spec (does the code match what the originating issue/spec asked for?). Runs both reviews in parallel sub-agents and reports them side by side. Use when the user wants to review a branch, a PR, work-in-progress changes, or asks to \"review since X\"."
 ---
 
-Two-axis review of the diff between `HEAD` and a fixed point the user supplies:
+## Version control
+
+Use `jj root` to detect jj-managed repositories, including colocated repos. Prefer jj there; use Git only in Git-only repositories. If detection fails but the current directory or an ancestor contains `.jj`, resolve the jj problem rather than falling back to Git. Check installed `--help` for version-specific syntax. Preserve unrelated user work by isolating task changes before editing.
+
+In jj use `jj status`, `jj diff`, `jj log`, `jj describe`, and `jj new`; there is no staging step. Use bookmarks for published names and `jj git fetch` / `jj git push` for remotes. Use `gh` for GitHub issues and PRs, passing explicit repo/head/base names when needed. Push through jj before opening a PR; avoid `gh` options that perform local Git operations.
+
+Two-axis review of the diff between the review tip (`@` in jj, `HEAD` in Git) and a fixed point the user supplies:
 
 - **Standards**: does the code conform to this repo's documented coding standards?
 - **Spec**: does the code faithfully implement the originating issue / spec?
@@ -18,9 +24,11 @@ The issue tracker should have been provided to you. If not, tell the user to run
 
 Whatever the user said is the fixed point (a commit SHA, branch name, tag, `main`, `HEAD~5`, etc.). If they didn't specify one, ask for it.
 
-Capture the diff command once: `git diff <fixed-point>...HEAD` (three-dot, so the comparison is against the merge-base). Also note the list of commits via `git log <fixed-point>..HEAD --oneline`.
+For jj, resolve the fixed point and review tip (default `@`, including working-copy edits) with `jj log -r '<revision>' --no-graph`. Require one revision for each, then pin them to full commit IDs using the `commit_id` template. Use `jj log -r 'heads(::BASE & ::TIP)'` with those IDs to find the comparison ancestor; require one or clarify the comparison. Capture `jj diff --from ANCESTOR --to TIP` and `jj log -r 'BASE..TIP'`. Pass the pinned IDs and commands to both reviewers. Translate Git-style revisions deliberately; accept jj change IDs and bookmarks. Fail on invalid revisions or an empty diff before spawning reviewers.
 
-Before going further, confirm the fixed point resolves (`git rev-parse <fixed-point>`) and the diff is non-empty. A bad ref or empty diff should fail here, not inside two parallel sub-agents.
+For Git-only repositories, capture the diff command once: `git diff <fixed-point>...HEAD` (three-dot, so the comparison is against the merge-base). Also note the list of commits via `git log <fixed-point>..HEAD --oneline`.
+
+In Git-only repositories, before going further, confirm the fixed point resolves (`git rev-parse <fixed-point>`) and the diff is non-empty. A bad ref or empty diff should fail here, not inside two parallel sub-agents.
 
 ### 2. Identify the spec source
 

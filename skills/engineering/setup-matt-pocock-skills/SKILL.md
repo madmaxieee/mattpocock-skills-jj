@@ -4,6 +4,12 @@ description: "Configure this repo for the engineering skills: set up its issue t
 disable-model-invocation: true
 ---
 
+## Version control
+
+Use `jj root` to detect jj-managed repositories, including colocated repos. Prefer jj there; use Git only in Git-only repositories. If detection fails but the current directory or an ancestor contains `.jj`, resolve the jj problem rather than falling back to Git. Check installed `--help` for version-specific syntax. Preserve unrelated user work by isolating task changes before editing.
+
+In jj use `jj status`, `jj diff`, `jj log`, `jj describe`, and `jj new`; there is no staging step. Use bookmarks for published names and `jj git fetch` / `jj git push` for remotes. Use `gh` for GitHub issues and PRs, passing explicit repo/head/base names when needed. Push through jj before opening a PR; avoid `gh` options that perform local Git operations.
+
 # Setup Matt Pocock's Skills
 
 Scaffold the per-repo configuration that the engineering skills assume:
@@ -20,9 +26,9 @@ This is a prompt-driven skill, not a deterministic script. Explore, present what
 
 Look at the current repo to understand its starting state. Read whatever exists; don't assume:
 
-- `git remote -v` and `.git/config`: is this a GitHub repo? Which one?
+- `jj git remote list` in jj repos, or `git remote -v` in Git-only repos: is this a GitHub repo? Which one?
 - `AGENTS.md` and `CLAUDE.md` at the repo root: does either exist? Is there already an `## Agent skills` section in either?
-- `GLOSSARY.md` and `GLOSSARY-MAP.md` at the repo root, and the legacy `CONTEXT.md` / `CONTEXT-MAP.md`. If a legacy file exists, offer to `git mv` it to its `GLOSSARY` name and rewrite those names in `docs/agents/domain.md`.
+- `GLOSSARY.md` and `GLOSSARY-MAP.md` at the repo root, and the legacy `CONTEXT.md` / `CONTEXT-MAP.md`. If a legacy file exists, offer to rename it with `mv` in jj repos (or `git mv` in Git-only repos) to its `GLOSSARY` name and rewrite those names in `docs/agents/domain.md`.
 - `docs/adr/` and any `src/*/docs/adr/` directories
 - `docs/agents/`: does this skill's prior output already exist?
 - `.scratch/`: a sign that a local-markdown issue tracker convention is already in use
@@ -39,7 +45,7 @@ Lead each section with the recommended answer so the user can accept it in a wor
 
 > Explainer: The "issue tracker" is where issues live for this repo. Skills like `to-tickets`, `triage`, and `to-spec` read from and write to it. They need to know whether to call `gh issue create`, write a markdown file under `.scratch/`, or follow some other workflow you describe. Pick the place you actually track work for this repo.
 
-Default posture: these skills were designed for GitHub. If a `git remote` points at GitHub, propose that. If a `git remote` points at GitLab (`gitlab.com` or a self-hosted host), propose GitLab. Otherwise (or if the user prefers), offer:
+Default posture: these skills were designed for GitHub. If a remote points at GitHub, propose that. If a remote points at GitLab (`gitlab.com` or a self-hosted host), propose GitLab. Otherwise (or if the user prefers), offer:
 
 - **GitHub**: issues live in the repo's GitHub Issues (uses the `gh` CLI)
 - **GitLab**: issues live in the repo's GitLab Issues (uses the [`glab`](https://gitlab.com/gitlab-org/cli) CLI)
@@ -48,7 +54,7 @@ Default posture: these skills were designed for GitHub. If a `git remote` points
 
 Record the choice in `docs/agents/issue-tracker.md`. The GitHub and GitLab templates carry a "PRs as a request surface" flag, defaulted **off**. Leave it off and don't raise it: a user who wants external PRs in the triage queue can flip the flag in the file later.
 
-A GitHub or GitLab tracker needs a reachable repo. When the user picks one and no `git remote` points at that host, get the repo URL from them and wire it up (`git init` if needed, `git remote add origin <url>`) before going further. Done when `gh repo view` / `glab repo view` prints the project from inside this directory; if it can't, stop and tell the user what's missing.
+A GitHub or GitLab tracker needs a reachable repo. When the user picks one and no remote points at that host, get the repo URL from them and wire it up (`jj git remote add origin <url>` in jj repos; `git init` if needed and `git remote add origin <url>` in Git-only repos). In a directory without version control, ask whether to initialize jj or Git before going further. Done when `gh repo view OWNER/REPO` / `glab repo view` prints the selected project; if it can't, stop and tell the user what's missing.
 
 **Section B: Triage label vocabulary.** Skip this section entirely if the `triage` skill isn't installed (exploration told you), since an uninstalled skill needs no labels.
 

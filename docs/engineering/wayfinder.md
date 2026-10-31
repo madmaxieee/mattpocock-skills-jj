@@ -47,7 +47,7 @@ Every ticket carries a `wayfinder:<type>` label. Each ticket is either **[HITL](
 | --- | --- | --- | --- |
 | `grilling` | HITL | The default. The question can be settled by talking it through. | [grilling](https://aihero.dev/skills-grilling) plus [domain-modeling](https://aihero.dev/skills-domain-modeling), in a fresh session |
 | `prototype` | HITL | "How should this look" or "how should this behave": a question talking cannot settle. | [prototype](https://aihero.dev/skills-prototype), with a link from the ticket to the built artifact |
-| `research` | AFK | A fact outside the working directory is blocking a decision. | A [research](https://aihero.dev/skills-research) [subagent](https://www.aihero.dev/ai-coding-dictionary/subagent), started when you chart the map and run in parallel on a `research/<name>` branch |
+| `research` | AFK | A fact outside the working directory is blocking a decision. | A [research](https://aihero.dev/skills-research) [subagent](https://www.aihero.dev/ai-coding-dictionary/subagent), started when you chart the map and run in parallel on a `research/<name>` bookmark (or Git branch) |
 | `task` | Either | Nothing to decide, but manual work blocks a decision, such as provisioning access, signing up for a service, or moving data so you can see its shape. | The agent alone where it can, otherwise a precise checklist for the human |
 
 `task` is the only type that *does* rather than decides. It belongs on the map only because it unblocks a decision, never because it delivers part of the destination. This type goes wrong most often in practice. Agents read it as an implementation step and start to write product code inside the map.
@@ -55,6 +55,10 @@ Every ticket carries a `wayfinder:<type>` label. Each ticket is either **[HITL](
 Research is the only exception to *one ticket per session*.
 
 ## Common questions
+
+**Does this work with jj?**
+
+Yes. This personal fork uses jj in jj-managed repositories, including colocated repos, and Git in Git-only repositories. GitHub operations use `gh`. The workflow retains its purpose while using the repository's version control system.
 
 **How is this different from `/grill-with-docs`? Which should I start with?**
 Session count, not project size. `/grill-with-docs` is single-session planning; wayfinder is multi-session planning. If you can hold the whole thing in one conversation, grilling is cheaper and better, and wayfinder is slower and denser for that case. The community shorthand is that wayfinder only makes sense if the work does not fit into a single session. This is by far the most-asked wayfinder question. People keep asking it because the skill descriptions do not tell you where your own task sits on that line. You have to judge the session count yourself.

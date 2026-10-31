@@ -22,89 +22,19 @@ If you want to keep up with changes to these skills, and any new ones I create, 
 
 [Sign Up To The Newsletter](https://www.aihero.dev/s/skills-newsletter)
 
-## Installation (30-second setup)
+## Local personal fork
 
-A plugin updates itself. [skills.sh](https://skills.sh/mattpocock/skills) copies editable files into your project, and you update them by hand. Pick one per agent, because installing both gives you every skill twice.
-
-### 1. Get the skills
-
-<details>
-<summary><strong>Claude Code</strong></summary>
+This checkout is the jj-aware personal fork. Install its promoted skills locally:
 
 ```bash
-claude plugin install mattpocock-skills@claude-plugins-official
+bash scripts/link-personal-skills.sh
 ```
 
-Updates itself by default.
+Run this from the checkout. It links `engineering/` and `productivity/` into `~/.agents/skills` and `~/.claude/skills`. To choose a destination, pass its path as an argument. Existing conflicting installations are reported without replacing them; move those aside and rerun. Disable any upstream plugin subscription separately to avoid duplicate skills.
 
-</details>
+The links use this checkout directly, so local edits are immediately available. Update the checkout with `jj git fetch`, inspect upstream changes, and integrate them with jj; there are no automatic plugin updates for this fork. Restart the agent session to refresh skill discovery. Re-run the linker after adding or renaming skills; remove obsolete links after removing skills.
 
-<details>
-<summary><strong>Codex</strong></summary>
-
-```bash
-codex plugin marketplace add mattpocock/skills
-codex plugin add mattpocock-skills@mattpocock
-```
-
-Updates itself at startup.
-
-</details>
-
-<details>
-<summary><strong>GitHub Copilot</strong> (CLI and VS Code)</summary>
-
-```bash
-copilot plugin marketplace add mattpocock/skills
-copilot plugin install mattpocock-skills@mattpocock
-```
-
-Then, once, add to `~/.copilot/settings.json`:
-
-```json
-{
-  "extraKnownMarketplaces": {
-    "mattpocock": { "source": { "source": "github", "repo": "mattpocock/skills" }, "autoUpdate": true }
-  }
-}
-```
-
-In VS Code, run **Chat: Install Plugin From Source** and enter `https://github.com/mattpocock/skills`. It updates daily.
-
-</details>
-
-<details>
-<summary><strong>Gemini CLI</strong> (manual updates)</summary>
-
-```bash
-gemini skills install https://github.com/mattpocock/skills.git --path skills/engineering
-gemini skills install https://github.com/mattpocock/skills.git --path skills/productivity
-```
-
-Re-run both commands to update.
-
-</details>
-
-<details>
-<summary><strong>Any other agent, or editable files</strong> (manual updates)</summary>
-
-```bash
-npx skills@latest add mattpocock/skills -a <agent>  # cursor, opencode, devin, windsurf, amp, pi; omit -a to choose
-```
-
-When the installer asks which skills to take, include `setup-matt-pocock-skills`. To update, run `npx skills@latest update`, and re-run `add` to pick up new skills.
-
-</details>
-
-### 2. Run `/setup-matt-pocock-skills`
-
-In your agent, run it once per repo. It will:
-
-- Ask you which issue tracker you want to use (GitHub, GitLab, local files, or anything else you describe)
-- Ask you what labels you apply to tickets when you triage them (`/triage` uses labels)
-- Ask you where you want to save any docs we create
-
-### 3. Bam - you're ready to go.
+Run `/setup-matt-pocock-skills` once per project to configure its tracker and docs. The upstream marketplace manifests are retained for reference; they do not publish or install this personal fork.
 
 ## Why These Skills Exist
 
@@ -224,7 +154,7 @@ Skills I use daily for code work.
 - **[to-spec](./skills/engineering/to-spec/SKILL.md)**: Turn the current conversation into a spec and publish it to the issue tracker. No interview, just synthesizes what you've already discussed.
 - **[to-tickets](./skills/engineering/to-tickets/SKILL.md)**: Break any plan, spec, or conversation into a set of tracer-bullet tickets, each declaring its blocking edges, written as text in a local file, or as native blocking links on a real tracker.
 - **[implement](./skills/engineering/implement/SKILL.md)**: Build the work described by a spec or set of tickets, driving `/tdd` at pre-agreed seams and closing out with `/code-review` before committing.
-- **[implement-spec](./skills/engineering/implement-spec/SKILL.md)**: Implement a whole spec on one integration branch. Works the tickets as a task graph, running implementer subagents across the ready frontier for maximum concurrency, then closes out with `/code-review`.
+- **[implement-spec](./skills/engineering/implement-spec/SKILL.md)**: Implement a whole spec on one integration line. Works the tickets as a task graph, running implementer subagents across the ready frontier for maximum concurrency, then closes out with `/code-review`.
 - **[wayfinder](./skills/engineering/wayfinder/SKILL.md)**: Plan a huge chunk of work, more than one agent session can hold, as a shared map of decision tickets on the issue tracker, and resolve them one at a time until the way to the destination is clear.
 - **[retro](./skills/engineering/retro/SKILL.md)**: Suggest improvements to the coding agent's environment (navigation, automated checks, coding standards, steering files, tooling) after a session, most severe first.
 

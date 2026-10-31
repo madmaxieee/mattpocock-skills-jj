@@ -3,9 +3,15 @@ name: scaffold-exercises
 description: Create exercise directory structures with sections, problems, solutions, and explainers that pass linting. Use when user wants to scaffold exercises, create exercise stubs, or set up a new course section.
 ---
 
+## Version control
+
+Use `jj root` to detect jj-managed repositories, including colocated repos. Prefer jj there; use Git only in Git-only repositories. If detection fails but the current directory or an ancestor contains `.jj`, resolve the jj problem rather than falling back to Git. Check installed `--help` for version-specific syntax. Preserve unrelated user work by isolating task changes before editing.
+
+In jj use `jj status`, `jj diff`, `jj log`, `jj describe`, and `jj new`; there is no staging step. Use bookmarks for published names and `jj git fetch` / `jj git push` for remotes. Use `gh` for GitHub issues and PRs, passing explicit repo/head/base names when needed. Push through jj before opening a PR; avoid `gh` options that perform local Git operations.
+
 # Scaffold Exercises
 
-Create exercise directory structures that pass `pnpm ai-hero-cli internal lint`, then commit with `git commit`.
+Create exercise directory structures that pass `pnpm ai-hero-cli internal lint`, then describe the task change with `jj describe` in jj repos, or commit with `git commit` in Git-only repos.
 
 ## Directory naming
 
@@ -66,14 +72,14 @@ The linter (`pnpm ai-hero-cli internal lint`) checks:
 
 When renumbering or moving exercises:
 
-1. Use `git mv` (not `mv`) to rename directories - preserves git history
+1. Use `mv` in jj repos, or `git mv` in Git-only repos, to rename directories; inspect the resulting diff
 2. Update the numeric prefix to maintain order
 3. Re-run lint after moves
 
 Example:
 
 ```bash
-git mv exercises/01-retrieval/01.03-embeddings exercises/01-retrieval/01.04-embeddings
+mv exercises/01-retrieval/01.03-embeddings exercises/01-retrieval/01.04-embeddings
 ```
 
 ## Example: stubbing from a plan

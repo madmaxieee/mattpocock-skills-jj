@@ -4,7 +4,7 @@
 
 Those files are the only thing that varies between repos. The skills themselves are identical everywhere. They read `docs/agents/issue-tracker.md` at run time and do what it says. That is why the set is not tied to GitHub, and why you never edit a skill file to point it at another tracker. Invoking it with "link the skills to a custom issue tracker" works with anything you can connect to programmatically, with no changes to the skills.
 
-It is a prompt-driven skill, not a deterministic script. It reads your `git remote`, `CLAUDE.md` and `GLOSSARY.md`, proposes what it found, and waits for you to confirm before it writes anything.
+It is a prompt-driven skill, not a deterministic script. It reads your repository remotes, `CLAUDE.md` and `GLOSSARY.md`, proposes what it found, and waits for you to confirm before it writes anything.
 
 ## When to reach for it
 
@@ -31,7 +31,7 @@ It starts each section with the recommended answer, and skips any question its e
 
 | Decision | What it proposes | When it asks |
 | --- | --- | --- |
-| **Issue tracker** | the one matching your `git remote` | always, because this is the one real choice |
+| **Issue tracker** | the one matching your repository remotes | always, because this is the one real choice |
 | **Triage labels** | keep the five canonical names (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`) | only if the `triage` skill is installed |
 | **Domain docs** | single-context: one `GLOSSARY.md` plus `docs/adr/` at the root | only if it spots monorepo signals, and then it offers a multi-context `GLOSSARY-MAP.md` |
 
@@ -49,6 +49,10 @@ The first three ship as templates in the skill and work out of the box. Local ma
 "Other" is a full option too. It is how Jira, Linear, Azure DevOps and Beads all work. You describe the workflow, the skill records your prose in `docs/agents/issue-tracker.md`, and the downstream skills follow the prose. Users have already built this: a Jira-over-[MCP](https://www.aihero.dev/ai-coding-dictionary/mcp) variant, a Gitea CLI shaped like `gh`, a hand-built local dashboard.
 
 ## Common questions
+
+**Does this work with jj?**
+
+Yes. This personal fork uses jj in jj-managed repositories, including colocated repos, and Git in Git-only repositories. GitHub operations use `gh`. The workflow retains its purpose while using the repository's version control system.
 
 **Do I have to use GitHub?**
 
